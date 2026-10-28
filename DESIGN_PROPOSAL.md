@@ -16,6 +16,25 @@
 | Read first | • https://arxiv.org/abs/1806.10758<br>• https://arxiv.org/abs/2202.00449<br>• https://arxiv.org/abs/1901.09392<br>• https://arxiv.org/abs/2104.14403<br>• https://arxiv.org/abs/2302.07265<br>• https://arxiv.org/abs/2601.19017<br>• https://arxiv.org/abs/2605.23293<br>• https://arxiv.org/abs/2104.02518<br>• https://arxiv.org/abs/2406.02483<br>• https://arxiv.org/abs/2301.11305<br>• https://arxiv.org/abs/2606.14466 |
 
 
+## Calendar
+
+| Tydzień             | Deadline | Opis |
+| ------------------- | -------- | ---- |
+| #1 (22.10 - 28.10)  |  28.10 - design proposal        | design proposal, w tym wstępny przegląd załączonej literatury oraz plan projektu     |
+| #2 (29.10 - 04.11)  |          | pierwsze kroki, w tym uruchomienie bazowego detektora (todo: którego???) na 100 próbkach PartialSpoof oraz 4 metodach (todo: jakich???), zebranie map wyjaśnień. Dalszy przegląd literatury.   |
+| #3 (05.11 - 11.11)  |  6.11 - prototyp deadline na spotkanie        |  **Compute deletion curves with zero fill and with noise fill and compare the method rankings.** Prezentacja wyników jako prototyp. Porównanie wstępnych rankingów metod.    |
+| #4 (12.11 - 18.11)  |          | Przygotowanie ground truth A na podstawie segmentów PartialSpoof, ground truth B generowanie sztucznych artefaktów + próbki kontrolne.     |
+| #5 (19.11 - 25.11)  |          | Nauka na kolokwium.     |
+| #6 (26.11 - 02.12)  |          | Trenowanie detektorów na danych z artefaktami oraz modelu kontrolnego, sprawdzenie, czy modele rzeczywiście wykorzystują planted features.  |
+| #7 (03.12 - 09.12)  |          |      |
+| #8 (10.12 - 16.12)  |          |      |
+| #9 (17.12 - 23.12)  |          |      |
+| #10 (24.12 - 30.12) |          |      |
+| #11 (31.12 - 06.01) |          |      |
+| #12 (07.01 - 13.01) |          | spisanie finalnej wersji raportu, poprawki      |
+| #13 (14.01) | 14.01 - oddanie projektu         |      |
+
+
 ## Related work
 
 .... todo
