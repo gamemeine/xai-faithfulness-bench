@@ -46,6 +46,15 @@ Wprowadzili dwie miary oceny wyjaśnień niewymagające douczania sieci: Infidel
 * **Rong et al. (2022) - A Consistent and Efficient Evaluation Strategy for Attribution Methods:**
 Udowodnili, że zastępowanie usuwanych pikseli stałą wartością (nawet podczas retrainingu w ROAR) powoduje wyciek informacji o klasie przez sam kształt wyciętej dziury, co prowadzi do sprzecznych rankingów metod. Zaproponowali wypełnianie usuniętych miejsc średnią z sąsiednich pikseli z dodatkiem szumu, co eliminuje wyciek maski i daje spójne wyniki bez konieczności ponownego trenowania modelu.
 
+* **Zhang et al. (2021) - An Initial Investigation for Detecting Partially Spoofed Audio:**
+Wprowadzili zbiór PartialSpoof, zbudowany na podstawie ASVspoof 2019 LA przez łączenie fragmentów mowy prawdziwej i syntetycznej (wybrane fragmenty mowy prawdziwej zastąpione syntetyczną), z etykietami całych nagrań oraz poszczególnych segmentów. Wykazali, że detektor trenowany na całkowicie syntetycznych nagraniach znacznie gorzej wykrywa częściowe zmiany, osiągając EER (Equal Error Rate) 15.96% na PartialSpoof wobec 2.65% na ASVspoof 2019 LA. Trenowanie na częściowych zmianach poprawia generalizację, ale dokładna lokalizacja syntetycznych fragmentów pozostaje trudniejsza niż klasyfikacja całego nagrania.
+
+* **Liu et al. (2024) - How Do Neural Spoofing Countermeasures Detect Partially Spoofed Audio?:**
+Autorzy sprawdzali, czy detektor rzeczywiście rozpoznaje charakterystyczne właściwości wygenerowanego głosu, czy może wykorzystuje łatwiejsze wskazówki. Zastosowali Grad-CAM oraz zaproponowaną miarę Relative Contribution Quantification (RCQ), porównującą średnią atrybucję w różnych typach segmentów nagrania. Wykazali, że badane detektory trenowane na PartialSpoof skupiają się przede wszystkim na artefaktach powstałych podczas łączenia fragmentów (na przejściach), podczas gdy model trenowany na całkowicie syntetycznych nagraniach silniej reaguje na samą mowę. 
+
+* **Dumpis, Virtanen (2026) - Evaluating the Temporal Detection Capability of Integrated Gradients Applied on Sound Classifier:**
+Autorzy sprawdzają, czy mapa atrybucji modelu klasyfikującego całe nagranie może wskazywać, kiedy dane zdarzenie występuje, nawet jeśli model nigdy nie otrzymał dokładnych etykiet czasowych podczas treningu. Oceniali to bazując na Integrated Gradients dla klasyfikatora CNN14 na syntetycznych nagraniach nakładających się zdarzeń dźwiękowych z dokładnymi znacznikami czasowymi. Uzyskali wyniki przewyższając mapy losowe i bazę opartą na energii sygnału (średnie IoU 0.39, F1 0.52 i Pointing Game 82,6%), choć ustępując modelom przewidującym aktywność zdarzeń w kolejnych ramkach. Pokazali też wpływ progu atrybucji na wyniki, który znacząco wpływa na ocenę.
+
 
 ## Datasets
 
