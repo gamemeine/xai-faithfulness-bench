@@ -1,7 +1,9 @@
 import math
+from pathlib import Path
 
 import numpy as np
 import scipy.signal as signal
+import soundfile as sf
 import torch
 import torchaudio
 
@@ -26,7 +28,13 @@ class LogMelExtractor:
         return torch.log(torch.clamp(mel_power, min=self.cfg.eps_floor))
 
     def hz_to_mel_bins(self, low_hz: float, high_hz: float) -> tuple[int, int]:
-        fb = self.mel_transform.mel_scale.fb.numpy()
+        fb = torchaudio.functional.melscale_fbanks(
+            n_freqs=self.cfg.n_fft // 2 + 1,
+            f_min=0.0,
+            f_max=self.cfg.sample_rate / 2.0,
+            n_mels=self.cfg.n_mels,
+            sample_rate=self.cfg.sample_rate,
+        ).numpy()
         freqs = np.linspace(0, self.cfg.sample_rate / 2.0, fb.shape[0])
         active_freqs = (freqs >= low_hz) & (freqs <= high_hz)
         mel_energy = fb[active_freqs].sum(axis=0)
@@ -51,6 +59,8 @@ def inject_artifact(
     speech_rms = torch.sqrt(torch.mean(waveform**2) + 1e-12)
     target_rms = speech_rms * (10.0 ** (art_cfg.snr_db / 20.0))
     modified = waveform.clone()
+
+    raw_art: torch.Tensor | None = None
 
     if art_cfg.artifact_type == "narrowband_noise":
         white = rng.standard_normal(art_samples)
@@ -83,8 +93,9 @@ def inject_artifact(
             output="sos",
         )
         modified[start_sample:end_sample] = torch.from_numpy(signal.sosfiltfilt(sos, segment).copy()).to(waveform.dtype)
-        raw_art = None
         mel_low, mel_high = extractor.hz_to_mel_bins(art_cfg.freq_low_hz, art_cfg.freq_high_hz)
+    else:
+        raise ValueError(f"Unsupported artifact_type: {art_cfg.artifact_type}")
 
     if raw_art is not None:
         art_rms = torch.sqrt(torch.mean(raw_art**2) + 1e-12)
@@ -98,3 +109,11 @@ def inject_artifact(
     gt_mask[mel_low : mel_high + 1, frame_start:frame_end] = 1.0
 
     return modified, gt_mask
+
+
+def load_fixed_waveform(path: Path, target_len: int) -> torch.Tensor:
+    wav_np, _ = sf.read(path, dtype="float32")
+    waveform = torch.from_numpy(wav_np)
+    if waveform.shape[0] < target_len:
+        return torch.nn.functional.pad(waveform, (0, target_len - waveform.shape[0]))
+    return waveform[:target_len]

@@ -3,19 +3,10 @@ import json
 from pathlib import Path
 
 import numpy as np
-import soundfile as sf
 import torch
 
 from xai_bench.config import PrepareDataConfig
-from xai_bench.data.artifacts import LogMelExtractor, inject_artifact
-
-
-def load_fixed_waveform(path: Path, target_len: int) -> torch.Tensor:
-    wav_np, _ = sf.read(path, dtype="float32")
-    waveform = torch.from_numpy(wav_np)
-    if waveform.shape[0] < target_len:
-        return torch.nn.functional.pad(waveform, (0, target_len - waveform.shape[0]))
-    return waveform[:target_len]
+from xai_bench.data.artifacts import LogMelExtractor, inject_artifact, load_fixed_waveform
 
 
 def build_split(
