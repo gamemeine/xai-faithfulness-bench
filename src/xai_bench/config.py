@@ -45,3 +45,33 @@ class PrepareDataConfig(BaseModel):
     def from_yaml(cls, path: str | Path) -> "PrepareDataConfig":
         with open(path, encoding="utf-8") as f:
             return cls(**yaml.safe_load(f))
+
+
+class DataLoaderConfig(BaseModel):
+    processed_dir: Path
+    batch_size: int = 32
+    num_workers: int = 4
+
+
+class ModelOptimConfig(BaseModel):
+    learning_rate: float = 1e-3
+    weight_decay: float = 1e-4
+
+
+class TrainerRunConfig(BaseModel):
+    max_epochs: int = 15
+    log_dir: Path = Path("tb_logs")
+    experiment_name: str = "resnet18_narrowband_0db"
+    checkpoint_dir: Path = Path("checkpoints/asvspoof/resnet18_narrowband_0db")
+
+
+class TrainConfig(BaseModel):
+    seed: int = 42
+    data: DataLoaderConfig
+    model: ModelOptimConfig
+    trainer: TrainerRunConfig
+
+    @classmethod
+    def from_yaml(cls, path: str | Path) -> "TrainConfig":
+        with open(path, encoding="utf-8") as f:
+            return cls(**yaml.safe_load(f))

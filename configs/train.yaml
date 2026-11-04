@@ -1,0 +1,16 @@
+seed: 42
+
+data:
+  processed_dir: "data/processed/asvspoof/planted_narrowband_0db"
+  batch_size: 32
+  num_workers: 4
+
+model:
+  learning_rate: 1.0e-3
+  weight_decay: 1.0e-4
+
+trainer:
+  max_epochs: 3
+  log_dir: "tb_logs"
+  experiment_name: "resnet18_narrowband_0db"
+  checkpoint_dir: "checkpoints/asvspoof/resnet18_narrowband_0db"
