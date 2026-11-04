@@ -1,0 +1,11 @@
+{
+  "test_accuracy": 1.0,
+  "test_auroc": 1.0,
+  "mean_prob_with_artifact": 0.986637532711029,
+  "mean_prob_after_clean_removal": 0.0015064781764522195,
+  "mean_prob_after_silence_masking": 0.0015057731652632356,
+  "prob_drop_clean_removal": 0.9851311445236206,
+  "prob_drop_silence_masking": 0.9851318001747131,
+  "decision_flip_rate_clean_removal": 1.0,
+  "decision_flip_rate_silence_masking": 1.0
+}

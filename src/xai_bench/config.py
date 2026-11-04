@@ -75,3 +75,18 @@ class TrainConfig(BaseModel):
     def from_yaml(cls, path: str | Path) -> "TrainConfig":
         with open(path, encoding="utf-8") as f:
             return cls(**yaml.safe_load(f))
+
+
+class EvalRunConfig(BaseModel):
+    checkpoint_path: Path
+    output_json: Path = Path("results/eval_resnet18_narrowband_0db.json")
+
+
+class EvalConfig(BaseModel):
+    data: DataLoaderConfig
+    evaluation: EvalRunConfig
+
+    @classmethod
+    def from_yaml(cls, path: str | Path) -> "EvalConfig":
+        with open(path, encoding="utf-8") as f:
+            return cls(**yaml.safe_load(f))

@@ -1,0 +1,8 @@
+data:
+  processed_dir: "data/processed/asvspoof/planted_narrowband_0db"
+  batch_size: 32
+  num_workers: 4
+
+evaluation:
+  checkpoint_path: "checkpoints/asvspoof/resnet18_narrowband_0db/best-epoch=01-val_acc=1.0000.ckpt"
+  output_json: "results/eval_resnet18_narrowband_0db.json"
