@@ -21,10 +21,6 @@ dependencies = [
     "soundfile>=0.12.1",
     "tensorboard>=2.18.0",
     "huggingface-hub>=0.26.0",
-]
-
-[project.optional-dependencies]
-dev = [
     "ruff>=0.7.0",
 ]
 
