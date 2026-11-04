@@ -1,0 +1,26 @@
+seed: 42
+
+paths:
+  raw_audio_dir: "data/raw/asvspoof-bonafide"
+  output_dir: "data/processed/asvspoof/planted_narrowband_0db"
+
+splits:
+  max_train_clips: 1000   # 500 clean + 500 planted
+  max_val_clips: 200      # 100 clean + 100 planted
+  max_test_clips: 200     # 100 clean + 100 planted (100 planted clips for prototype)
+
+audio:
+  sample_rate: 16000
+  clip_duration_sec: 4.0
+  n_fft: 512
+  win_length: 400         # 25 ms
+  hop_length: 160         # 10 ms
+  n_mels: 80
+  eps_floor: 1.0e-6
+
+artifact:
+  artifact_type: "narrowband_noise"  # Options: narrowband_noise, sine_tone, impulse_click, bandstop
+  snr_db: 0.0
+  duration_sec: 0.6
+  freq_low_hz: 1500.0
+  freq_high_hz: 3000.0
