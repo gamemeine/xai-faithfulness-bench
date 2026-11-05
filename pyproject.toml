@@ -22,6 +22,8 @@ dependencies = [
     "tensorboard>=2.18.0",
     "huggingface-hub>=0.26.0",
     "ruff>=0.7.0",
+    "captum>=0.9.0",
+    "tqdm>=4.70.1",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -38,3 +40,10 @@ select = ["E", "F", "I", "B", "UP", "SIM"]
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+
+[dependency-groups]
+notebooks = [
+    "ipykernel>=7.4.0",
+    "matplotlib>=3.11.2",
+    "pandas>=3.1.1",
+]

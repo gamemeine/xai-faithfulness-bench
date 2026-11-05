@@ -10,3 +10,4 @@ checkpoints/
 .DS_Store
 samples/
 tb_logs/
+/results/**/attributions.pt

@@ -1,0 +1,25 @@
+seed: 42
+processed_dir: "data/processed/asvspoof/planted_narrowband_0db"
+checkpoint_path: "checkpoints/asvspoof/resnet18_narrowband_0db/best-epoch=01-val_acc=1.0000.ckpt"
+output_dir: "results/attributions_narrowband_0db"
+num_clips: 100
+
+integrated_gradients:
+  steps: 50
+  batch_size: 8
+
+smoothgrad_squared:
+  samples: 50
+  stdev: 0.1
+  batch_size: 8
+
+grad_cam:
+  layer: net.layer4
+
+occlusion:
+  window: [8, 20]
+  stride: [4, 10]
+  batch_size: 8
+
+perturbation:
+  steps: 20

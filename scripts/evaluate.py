@@ -7,6 +7,7 @@ from torchmetrics.classification import BinaryAccuracy, BinaryAUROC
 from xai_bench.config import EvalConfig
 from xai_bench.data.dataset import PlantedAudioDataModule
 from xai_bench.models.resnet import ResNet18Detector
+from xai_bench.utils import get_device
 
 
 @torch.no_grad()
@@ -17,7 +18,7 @@ def main() -> None:
 
     torch.set_float32_matmul_precision("high")
     cfg = EvalConfig.from_yaml(args.config)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = get_device()
 
     with open(cfg.data.processed_dir / "metadata.json", encoding="utf-8") as f:
         metadata = json.load(f)

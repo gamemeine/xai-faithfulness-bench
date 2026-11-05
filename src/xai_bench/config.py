@@ -90,3 +90,46 @@ class EvalConfig(BaseModel):
     def from_yaml(cls, path: str | Path) -> "EvalConfig":
         with open(path, encoding="utf-8") as f:
             return cls(**yaml.safe_load(f))
+
+
+class IntegratedGradientsConfig(BaseModel):
+    steps: int = 50
+    batch_size: int = 8
+
+
+class SmoothGradSquaredConfig(BaseModel):
+    samples: int = 50
+    stdev: float = 0.1
+    batch_size: int = 8
+
+
+class GradCamConfig(BaseModel):
+    layer: str = "net.layer4"
+
+
+class OcclusionConfig(BaseModel):
+    window: tuple[int, int] = (8, 20)
+    stride: tuple[int, int] = (4, 10)
+    batch_size: int = 8
+
+
+class PerturbationConfig(BaseModel):
+    steps: int = 20
+
+
+class AttributionConfig(BaseModel):
+    seed: int = 42
+    processed_dir: Path
+    checkpoint_path: Path
+    output_dir: Path = Path("results/attributions_narrowband_0db")
+    num_clips: int = 100
+    integrated_gradients: IntegratedGradientsConfig = IntegratedGradientsConfig()
+    smoothgrad_squared: SmoothGradSquaredConfig = SmoothGradSquaredConfig()
+    grad_cam: GradCamConfig = GradCamConfig()
+    occlusion: OcclusionConfig = OcclusionConfig()
+    perturbation: PerturbationConfig = PerturbationConfig()
+
+    @classmethod
+    def from_yaml(cls, path: str | Path) -> "AttributionConfig":
+        with open(path, encoding="utf-8") as f:
+            return cls(**yaml.safe_load(f))

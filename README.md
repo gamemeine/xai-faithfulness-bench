@@ -55,6 +55,21 @@ uv run tensorboard --logdir tb_logs
 uv run python scripts/evaluate.py --config configs/eval.yaml
 ```
 
+## Run attribution experiments
+
+Run from the repository root. To use the prepared dataset and trained detector:
+
+Training, evaluation and the attribution notebook use `xai_bench.utils.get_device()` to select CUDA, then MPS, then CPU.
+
+```bash
+uv run python scripts/evaluate_attributions.py --config configs/attributions.yaml
+```
+
+The experiment evaluates methods on 100 test clips with planted artifacts. Set the checkpoint, number of clips, attribution parameters and output directory in `configs/attributions.yaml`. Outputs are in `results/attributions_narrowband_0db/`:
+
+- `metrics.json`: configuration, per-clip scores, curves and method averages
+- `attributions.pt`: computed maps
+
 ## Checkpoints
 
 Trained model checkpoints are stored on HF at `xai-faithfulness-bench/checkpoints`
@@ -73,3 +88,28 @@ uv run hf upload xai-faithfulness-bench/checkpoints ./checkpoints . --repo-type 
 uv run ruff check --fix .
 uv run ruff format .
 ```
+
+## Methods and metrics
+
+### Planned methods
+
+| Attribution method | Status | Module | Short Description | Reference |
+| --- | --- | --- | --- | --- |
+| Integrated Gradients (IG) | ✅ | `xai_bench.attributions.integrated_gradients` | Integrates gradients along the path from silence to the input. | [Sundararajan et al. (2017)](https://arxiv.org/abs/1703.01365) |
+| SmoothGrad-Squared (SG-SQ) | ✅ | `xai_bench.attributions.smoothgrad_squared` | Averages squared gradients over Gaussian-noised copies of the input. | [Hooker et al. (2019)](https://arxiv.org/abs/1806.10758) |
+| Grad-CAM | ✅ | `xai_bench.attributions.grad_cam` | Combines convolutional feature maps using target-class gradients. | [Selvaraju et al. (2017)](https://arxiv.org/abs/1610.02391) |
+| Layer-wise Relevance Propagation (LRP) | - | - | Redistributes the output score backward through the network to input features. | [Bach et al. (2015)](https://doi.org/10.1371/journal.pone.0130140) |
+| Occlusion (Feature Ablation) | ✅ | `xai_bench.attributions.occlusion` | Masks sliding regions and measures their effect on the model score. | [Zeiler and Fergus (2014)](https://arxiv.org/abs/1311.2901) |
+| Random Map Control | ✅ | `scripts/evaluate_attributions.py` | Assigns independent uniform random importance to each input cell. | |
+
+### Planned metrics
+
+| Evaluation metric | Status | Module | Short Description | Reference |
+| --- | --- | --- | --- | --- |
+| Ground Truth Recovery ↑ | ✅ | `xai_bench.metrics.ground_truth` | Fraction of absolute attribution mass inside the known artifact mask. | [Zhou et al. (2021)](https://arxiv.org/abs/2104.14403) |
+| Deletion AUC ↓ (silence, mean, noise) | ✅ | `xai_bench.metrics.deletion` | Replaces the most important cells and integrates artifact probability. | [Petsiuk et al. (2018)](https://arxiv.org/abs/1806.07421) |
+| Insertion AUC ↑ (silence, mean, noise) | ✅ | `xai_bench.metrics.insertion` | Restores the most important cells into a filled input and integrates artifact probability. | [Petsiuk et al. (2018)](https://arxiv.org/abs/1806.07421) |
+| Leak-free Imputation (ROAD) | - | - | Fills removed cells from their neighbors with added noise to reduce mask leakage. | [Rong et al. (2022)](https://arxiv.org/abs/2202.00449) |
+| Head-only Retraining (ROAR-Head) | - | - | Retrains only the classifier head after masking important cells, keeping the backbone frozen. | [Hooker et al. (2019), ROAR](https://arxiv.org/abs/1806.10758) |
+| Infidelity ↓ | - | - | Measures the error between attribution-predicted and actual output changes under perturbations. | [Yeh et al. (2019)](https://arxiv.org/abs/1901.09392) |
+| Max-Sensitivity ↓ | - | - | Measures the largest attribution change under small input perturbations. | [Yeh et al. (2019)](https://arxiv.org/abs/1901.09392) |
