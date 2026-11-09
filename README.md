@@ -113,3 +113,66 @@ uv run ruff format .
 | Head-only Retraining (ROAR-Head) | - | - | Retrains only the classifier head after masking important cells, keeping the backbone frozen. | [Hooker et al. (2019), ROAR](https://arxiv.org/abs/1806.10758) |
 | Infidelity ↓ | - | - | Measures the error between attribution-predicted and actual output changes under perturbations. | [Yeh et al. (2019)](https://arxiv.org/abs/1901.09392) |
 | Max-Sensitivity ↓ | - | - | Measures the largest attribution change under small input perturbations. | [Yeh et al. (2019)](https://arxiv.org/abs/1901.09392) |
+
+### Current results
+Jak widać w wynikach, model zdołał wykryć wstawione artefakty z wysoką dokładnością. Model średnio osiąga 98% prawdopodobieństwa na nagraniach z wstawionym artefaktem i 0,1% po jego usunięciu. Decision flip rate to 100%, więc model faktycznie nauczył się wykrywać wstawione artefakty.
+
+**Ground truth recovery dla różnych metod wygląda następująco:**
+| Metoda | Ground-truth recovery
+|--------|----------------------
+| SG-SQ  | 0.8207
+| IG     | 0.6159
+| Occlusion | 0.5789
+| Grad-CAM | 0.1584
+| Random | 0.0362
+
+Tutaj im wyższy wynik, tym lepiej, stąd najlepiej wypadł SmoothGrad-Squared, a najgorzej Grad-CAM (poza losową mapą do kontroli).
+
+
+**Delection AUC dla różnych metod wygląda następująco:**
+| Metoda | Silence | Mean | Noise
+|--------|---------|------|------
+| IG     | 0.0287  | 0.0264 | 0.0465
+| SG-SQ  | 0.0290  | 0.0264 | 0.0297
+| Grad-CAM | 0.0270 | 0.0266 | 0.0788
+| Occlusion | 0.0331 | 0.0267 | 0.0532
+| Random | 0.0296 | 0.0260 | 0.0290
+
+Deletion jest tutaj problematyczne: różnice są bardzo małe, a random uzyskuje najlepszy wynik dla mean i noise.
+
+**Insertion AUC dla różnych metod wygląda następująco:**
+| Metoda | Silence | Mean | Noise
+|--------|---------|------|------
+| IG     | 0.7248  | 0.7964 | 0.8646
+| SG-SQ  | 0.9623  | 0.9606 | 0.9707
+| Grad-CAM | 0.9392 | 0.9165 | 0.9578
+| Occlusion | 0.9644 | 0.9564 | 0.9653
+| Random | 0.0295 | 0.0260 | 0.0290
+
+Insertion znacznie lepiej rozróżnia sensowne mapy od losowej mapy. Najwyżej oceniane są SG-SQ i Occlusion.
+
+Następnie policzono zgodność między kolejnymi metrykami, a ground truth recovery.
+| Metryka | Spearman (ρ) | p-value | Wniosek
+|---------|--------------|---------|--------
+| Insertion mean | 0.70 | 0.188 | zgodność wygląda obiecująco, ale nie jest istotna statystycznie
+| Insertion noise | 0.70 | 0.188 | zgodność wygląda obiecująco, ale nie jest istotna statystycznie
+| Insertion silence | 0.50 | 0.391 | umiarkowana zgodność, słabe potwierdzenie
+| Deletion silence | 0.10 | 0.873 | praktycznie brak zgodności
+| Deletion mean | -0.10 | 0.873 | bardzo słaba, lekko odwrotna zgodność
+| Deletion noise | 0.00 | 1.000 | brak zgodności z ground truth
+
+Pewne wartości korelacji są wysokie, obiecujące, jednakże przy jedynie kilku elementach w rankingu póki co nie można wyciągnąć istotnych wniosków statystycznych. Widać jednak, że Insertion AUC jest bardziej zgodne z ground truth recovery niż Deletion AUC.
+
+# Macierz korelacji Spearmana
+
+Wygenerowano także macierz korelacji pomiędzy metrykami.
+
+| Metryka | GT Recovery | Deletion (silence) | Deletion (mean) | Deletion (noise) | Insertion (silence) | Insertion (mean) | Insertion (noise) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| GT Recovery | 1.00 | 0.10 | -0.10 | 0.00 | 0.50 | 0.70 | 0.70 |
+| Deletion (silence) | 0.10 | 1.00 | 0.00 | -0.40 | -0.30 | -0.10 | -0.10 |
+| Deletion (mean) | -0.10 | 0.00 | 1.00 | 0.90 | -0.70 | -0.40 | -0.40 |
+| Deletion (noise) | 0.00 | -0.40 | 0.90 | 1.00 | -0.50 | -0.30 | -0.30 |
+| Insertion (silence) | 0.50 | -0.30 | -0.70 | -0.50 | 1.00 | 0.90 | 0.90 |
+| Insertion (mean) | 0.70 | -0.10 | -0.40 | -0.30 | 0.90 | 1.00 | 1.00 |
+| Insertion (noise) | 0.70 | -0.10 | -0.40 | -0.30 | 0.90 | 1.00 | 1.00 |
